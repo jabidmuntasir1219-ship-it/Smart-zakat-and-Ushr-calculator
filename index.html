@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Shariah Zakat & Ushr Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 25px;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #2980b9;
+            font-size: 1.1em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .market-section {
+            background: #eef9ff;
+            border: 1px solid #3498db;
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .col {
+            flex: 1;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #219150;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+        .result-box-style {
+            background: #fdfefe;
+            border: 1px solid #ccc;
+            color: #333;
+        }
+        .result h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.4em;
+        }
+        .breakdown {
+            text-align: left;
+            color: #333;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+        .status-msg {
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success-msg { background-color: #e8f8f5; color: #27ae60; border-left: 4px solid #2ecc71; }
+        .danger-msg { background-color: #fdf2e9; color: #d35400; border-left: 4px solid #e67e22; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Smart Shariah Zakat & Ushr Calculator</h2>
+    <div class="subtitle">Dynamic Nisab Evaluation for Both Personal Wealth & Agricultural Produce</div>
+
+    <!-- 1. TODAY'S MARKET RATES -->
+    <div class="section market-section">
+        <h3>1. Today's Market Rates (For Nisab Calculation)</h3>
+        <div class="row">
+            <div class="col">
+                <label>Gold Price (per Vhari):</label>
+                <input type="number" id="marketGoldPrice" placeholder="e.g., 120000" min="1">
+            </div>
+            <div class="col">
+                <label>Silver Price (per Vhari):</label>
+                <input type="number" id="marketSilverPrice" placeholder="e.g., 2000" min="1">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label>Crop Market Price (per KG):</label>
+                <input type="number" id="cropPricePerKg" placeholder="e.g., 40 (Price of Rice/Wheat)" min="1">
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. PRECIOUS METALS -->
+    <div class="section">
+        <h3>2. Precious Metals Owned (Input in Vhari/Tola)</h3>
+        <div class="row">
+            <div class="col">
+                <label>Total Gold Weight:</label>
+                <input type="number" id="goldWeight" placeholder="0" min="0">
+            </div>
+            <div class="col">
+                <label>Total Silver Weight:</label>
+                <input type="number" id="silverWeight" placeholder="0" min="0">
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. OTHER LIQUID WEALTH -->
+    <div class="section">
+        <h3>3. Other Wealth & Liabilities (In Currency)</h3>
+        <label>Cash & Bank Balance:</label>
+        <input type="number" id="cash" placeholder="0" min="0">
+
+        <label>Value of Commercial / Business Goods:</label>
+        <input type="number" id="business" placeholder="0" min="0">
+
+        <label>Deductible Short-term Debts / Liabilities:</label>
+        <input type="number" id="debts" placeholder="0" min="0">
+    </div>
+
+    <!-- 4. AGRICULTURAL PRODUCE (INPUT IN WEIGHT NOW) -->
+    <div class="section">
+        <h3>4. Agricultural Produce / Ushr (Input in Total KG)</h3>
+        <label>Total Harvest Weight from Rain-fed Land (Natural Water):</label>
+        <input type="number" id="rainCropWeight" placeholder="0" min="0">
+
+        <label>Total Harvest Weight from Irrigated Land (Artificial/Paid Water):</label>
+        <input type="number" id="irrigationCropWeight" placeholder="0" min="0">
+    </div>
+
+    <button onclick="calculateZakatAndUshr()">Calculate Zakat & Ushr</button>
+
+    <!-- RESULT EXPANSION BOX -->
+    <div class="result result-box-style" id="resultBox">
+        <h3>Evaluation Summary</h3>
+        
+        <!-- Status Messages -->
+        <div id="zakatStatus" class="status-msg"></div>
+        <div id="ushrStatus" class="status-msg"></div>
+        
+        <div class="breakdown">
+            <p><strong>Silver Nisab Threshold (52.5 Vhari):</strong> <span id="silverNisabDisplay">0</span></p>
+            <p><strong>Ushr Nisab Threshold (5 Wasqs / 612 KG):</strong> <span id="ushrNisabDisplay">0</span></p>
+            <hr>
+            <p><strong>Your Net Personal Wealth Value:</strong> <span id="netWealthDisplay">0</span></p>
+            <p><strong>Your Total Harvest Weight:</strong> <span id="totalCropWeightDisplay">0 KG</span></p>
+            <br>
+            <p><strong>Zakat Payable on Personal Wealth (2.5%):</strong> <span id="regularZakat">0</span></p>
+            <p><strong>Ushr Payable on Crops (5% / 10%):</strong> <span id="cropZakat">0</span></p>
+            <hr>
+            <p style="font-size: 1.3em; color: #c0392b;"><strong>Total Payable Amount:</strong> <span id="totalZakat">0</span></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getVal(id) {
+        let val = document.getElementById(id).value;
+        return val === "" ? 0 : parseFloat(val);
+    }
+
+    function calculateZakatAndUshr() {
+        // মার্কেট রেট ইনপুট
+        let marketGoldPrice = getVal('marketGoldPrice');
+        let marketSilverPrice = getVal('marketSilverPrice');
+        let cropPricePerKg = getVal('cropPricePerKg');
+
+        // ভ্যালিডেশন
+        if (marketGoldPrice <= 0 || marketSilverPrice <= 0 || cropPricePerKg <= 0) {
+            alert("Please enter today's Gold, Silver, and Crop market prices per unit.");
+            return;
+        }
+
+        // ১. পার্সোনাল সম্পদের নিসাব (স্বর্ণ ও রূপা)
+        let goldNisabThreshold = marketGoldPrice * 7.5;
+        let silverNisabThreshold = marketSilverPrice * 52.5;
+
+        let goldWeight = getVal('goldWeight');
+        let silverWeight = getVal('silverWeight');
+        let totalGoldValue = goldWeight * marketGoldPrice;
+        let totalSilverValue = silverWeight * marketSilverPrice;
+
+        let cash = getVal('cash');
+        let business = getVal('business');
+        let debts = getVal('debts');
+
+        let totalWealth = (cash + totalGoldValue + totalSilverValue + business) - debts;
+        let regularZakat = 0;
+
+        // শরিয়াহ নিসাব সিলেকশন ফর পার্সোনাল ওয়েলথ
+        let applicablePersonalNisab = silverNisabThreshold;
+        let isMixedAsset = (cash > 0 || totalSilverValue > 0 || business > 0);
+        if (totalGoldValue > 0 && !isMixedAsset) {
+            applicablePersonalNisab = goldNisabThreshold;
+        }
+
+        // পার্সোনাল যাকাত কন্ডিশন চেক
+        let zakatStatus = document.getElementById('zakatStatus');
+        if (totalWealth >= applicablePersonalNisab) {
+            regularZakat = totalWealth * 0.025;
+            zakatStatus.className = "status-msg success-msg";
+            zakatStatus.innerText = "Personal Zakat: Applicable (Farz) - Your wealth is above Nisab.";
+        } else {
+            regularZakat = 0;
+            zakatStatus.className = "status-msg danger-msg";
+            zakatStatus.innerText = "Personal Zakat: Not applicable for you, brother (Below Nisab).";
+        }
+
+        // ২. কৃষিজাত ফসল বা উশর (USHR) লজিক [FIXED]
+        const USHR_NISAB_KG = 612; // ৫ ওয়াসাক = ৬১২ কেজি (স্ট্যান্ডার্ড শরিয়াহ পরিমাপ)
+        let rainCropWeight = getVal('rainCropWeight');
+        let irrigationCropWeight = getVal('irrigationCropWeight');
+        let totalCropWeight = rainCropWeight + irrigationCropWeight; // মোট ফসলের ওজন (কেজি)
+        
+        let cropZakat = 0;
+        let ushrStatus = document.getElementById('ushrStatus');
+
+        // নতুন ফিক্সড কন্ডিশন: মোট ফসল যদি ৬১২ কেজির সমান বা বেশি হয়, তবেই উশর আসবে
+        if (totalCropWeight >= USHR_NISAB_KG) {
+            // উশর হিসাব হচ্ছে ওজনের ওপর ভিত্তি করে, পরে দাম দিয়ে গুণ করে কারেন্সি করা হচ্ছে
+            let rainUshrWeight = rainCropWeight * 0.10;       // বৃষ্টির পানিতে ১০%
+            let irrigationUshrWeight = irrigationCropWeight * 0.05; // সেচের পানিতে ৫%
+            
+            // মোট উশরের ওজনকে বাজার মূল্য দিয়ে গুণ করে কারেন্সিতে রূপান্তর
+            cropZakat = (rainUshrWeight + irrigationUshrWeight) * cropPricePerKg;
+            
+            ushrStatus.className = "status-msg success-msg";
+            ushrStatus.innerText = "Ushr (Crop Zakat): Applicable - Total harvest meets the 612 KG Nisab.";
+        } else {
+            cropZakat = 0; // নিসাবের কম হলে উশর সম্পূর্ণ শূন্য
+            ushrStatus.className = "status-msg danger-msg";
+            ushrStatus.innerText = "Ushr (Crop Zakat): Not applicable for you, brother - Total harvest is below 612 KG.";
+        }
+
+        // ৩. ডাইনামিক নিসাব ও আউটপুট শো করা
+        let ushrNisabValueCurrency = USHR_NISAB_KG * cropPricePerKg;
+        document.getElementById('silverNisabDisplay').innerText = applicablePersonalNisab.toLocaleString('en-US');
+        document.getElementById('ushrNisabDisplay').innerText = USHR_NISAB_KG + " KG (~ Value: " + ushrNisabValueCurrency.toLocaleString('en-US') + ")";
+        document.getElementById('netWealthDisplay').innerText = totalWealth.toLocaleString('en-US');
+        document.getElementById('totalCropWeightDisplay').innerText = totalCropWeight.toLocaleString('en-US') + " KG";
+
+        document.getElementById('regularZakat').innerText = regularZakat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('cropZakat').innerText = cropZakat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('totalZakat').innerText = (regularZakat + cropZakat).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        document.getElementById('resultBox').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
