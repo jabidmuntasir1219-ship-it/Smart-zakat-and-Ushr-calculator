@@ -5,7 +5,7 @@ A highly responsive, single-page Islamic FinTech web application built to calcul
 ---
 
 ## 🚀 Live Demo
-🔗 **[Insert Your GitHub Pages Link Here]**
+🔗 **https://jabidmuntasir1219-ship-it.github.io/Smart-zakat-and-Ushr-calculator/**
 
 ---
 
