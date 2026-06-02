@@ -241,7 +241,6 @@
         toggleFormSections();
     };
 
-    // Form Section Controller
     function toggleFormSections() {
         let mode = document.getElementById('calcMode').value;
         let marketSec = document.getElementById('marketSection');
@@ -263,7 +262,6 @@
         }
     }
 
-    // Dynamic UI Card Generator for Crops
     function addNewCropField() {
         let container = document.getElementById('cropContainer');
         let card = document.createElement('div');
@@ -294,13 +292,11 @@
         container.appendChild(card);
     }
 
-    // Input Sanitizer
     function getVal(id) {
         let el = document.getElementById(id);
         return el && el.value !== "" ? parseFloat(el.value) : 0;
     }
 
-    // Main Engine
     function calculateAll() {
         let mode = document.getElementById('calcMode').value;
         
@@ -317,7 +313,6 @@
         document.getElementById('zakatPayableRow').style.display = 'none';
         document.getElementById('ushrPayableRow').style.display = 'none';
 
-        // 1. ZAKAT TRACK
         if (mode === 'zakat') {
             let marketGoldPrice = getVal('marketGoldPrice');
             let marketSilverPrice = getVal('marketSilverPrice');
@@ -367,7 +362,6 @@
             document.getElementById('totalZakat').innerText = regularZakat.toLocaleString('en-US', {minimumFractionDigits: 2});
         }
 
-        // 2. USHR TRACK (FIXED SYNTAX & VALIDATION)
         if (mode === 'ushr') {
             const USHR_NISAB_KG = 612;
             let meetsUshrCondition = false;
@@ -377,7 +371,6 @@
             let rainWeights = document.getElementsByClassName('cropRainWeight');
             let irrigWeights = document.getElementsByClassName('cropIrrigWeight');
 
-            // ভ্যালিড প্রাইস থাকা শস্যের টোটাল ওজন ট্র্যাকিং
             let combinedWeight = 0;
             for (let i = 0; i < names.length; i++) {
                 let price = prices[i].value !== "" ? parseFloat(prices[i].value) : 0;
@@ -396,7 +389,6 @@
             for (let i = 0; i < names.length; i++) {
                 let price = prices[i].value !== "" ? parseFloat(prices[i].value) : 0;
                 let rain = rainWeights[i].value !== "" ? parseFloat(rainWeights[i].value) : 0;
-                // এই লাইনের টাইপোটি সলিডভাবে ফিক্স করা হলো
                 let irrig = irrigWeights[i].value !== "" ? parseFloat(irrigWeights[i].value) : 0; 
                 
                 if (meetsUshrCondition && price > 0) {
