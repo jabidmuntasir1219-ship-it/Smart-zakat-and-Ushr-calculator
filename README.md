@@ -6,7 +6,7 @@ An advanced, responsive, single-page web application designed to compute individ
 ---
 
 ## 🚀 Live Demo
-*Deploy the `index.html` file to GitHub Pages or any static hosting service, and paste your URL here.*
+*https://jabidmuntasir1219-ship-it.github.io/Smart-zakat-and-Ushr-calculator/*
 
 ---
 
