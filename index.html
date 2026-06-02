@@ -150,7 +150,6 @@
     <h2>Smart Shariah Zakat & Ushr Calculator</h2>
     <div class="subtitle">Dynamic Nisab Evaluation for Personal Wealth or Agricultural Yields</div>
 
-    <!-- CALCULATION MODE DROPDOWN -->
     <div class="calculation-mode-box">
         <label for="calcMode"><strong>Select What You Want to Calculate Today:</strong></label>
         <select id="calcMode" onchange="toggleFormSections()" style="margin-top: 5px; padding: 12px; border-color: #2980b9;">
@@ -159,7 +158,6 @@
         </select>
     </div>
 
-    <!-- 1. MARKET RATES FOR ZAKAT -->
     <div class="section market-section" id="marketSection">
         <h3>1. Today's Market Rates</h3>
         <div class="row">
@@ -175,7 +173,6 @@
         <p style="font-size: 0.8em; margin: 5px 0 0 0; color: #555;">Required for dynamic wealth Nisab threshold evaluation.</p>
     </div>
 
-    <!-- 2. WEALTH & LIABILITIES (ZAKAT TRACK) -->
     <div class="section" id="zakatSection">
         <h3>2. Wealth & Liabilities (Personal Zakat)</h3>
         <div class="row">
@@ -184,13 +181,12 @@
         </div>
         <div class="row">
             <div class="col"><label>Cash & Bank Balance:</label><input type="number" id="cash" placeholder="0"></div>
-            <div class="col"><label>Business Goods Value:</label><input type="number" id="business" placeholder="0"></div>
+            <div class="col"><label>Business Goods Value:</label><input type="number" id="business" placeholder="e.g., Stock, Trading Land, Flat"></div>
         </div>
         <label>Deductible Short-term Debts / Liabilities:</label>
         <input type="number" id="debts" placeholder="0">
     </div>
 
-    <!-- 3. AGRICULTURAL PRODUCE (USHR TRACK) -->
     <div class="section" id="ushrSection">
         <h3>1. Agricultural Crops (Ushr)</h3>
         <p style="font-size: 0.85em; color: #666;">Add each type of crop you harvested separately:</p>
@@ -225,7 +221,6 @@
 
     <button class="btn-calc" onclick="calculateAll()">Calculate Due Amount</button>
 
-    <!-- RESULT BOX -->
     <div class="result" id="resultBox">
         <h3 style="text-align:center;">Evaluation Summary</h3>
         <div id="zakatStatus" class="status-msg"></div>
@@ -252,14 +247,17 @@
         let zakatSec = document.getElementById('zakatSection');
         let ushrSec = document.getElementById('ushrSection');
         
+        // মোড পরিবর্তনের সাথে সাথে পূর্বের রেজাল্ট স্ক্রিন পুরোপুরি রিসেট ও হাইড হবে
         document.getElementById('resultBox').style.display = 'none';
+        document.getElementById('zakatStatus').style.display = 'none';
+        document.getElementById('ushrStatus').style.display = 'none';
 
         if (mode === 'zakat') {
             marketSec.style.display = 'block';
             zakatSec.style.display = 'block';
             ushrSec.style.display = 'none';
         } else if (mode === 'ushr') {
-            marketSec.style.display = 'none'; // উশরের জন্য সোনা/রূপার রেট হাইড করা হলো
+            marketSec.style.display = 'none';
             zakatSec.style.display = 'none';
             ushrSec.style.display = 'block';
         }
@@ -316,7 +314,7 @@
         document.getElementById('zakatPayableRow').style.display = 'none';
         document.getElementById('ushrPayableRow').style.display = 'none';
 
-        // 1. ZAKAT MODE
+        // 1. ZAKAT MODE (STRICT SHARIAH EVALUATION ENGINE)
         if (mode === 'zakat') {
             let marketGoldPrice = getVal('marketGoldPrice');
             let marketSilverPrice = getVal('marketSilverPrice');
@@ -326,15 +324,38 @@
                 return;
             }
             
-            let goldNisab = marketGoldPrice * 7.5;
-            let silverNisab = marketSilverPrice * 52.5;
-            let netWealth = (getVal('cash') + (getVal('goldWeight') * marketGoldPrice) + (getVal('silverWeight') * marketSilverPrice) + getVal('business')) - getVal('debts');
+            let goldWeight = getVal('goldWeight');
+            let silverWeight = getVal('silverWeight');
+            let cash = getVal('cash');
+            let business = getVal('business');
+            let debts = getVal('debts');
+
+            let goldNisabValue = marketGoldPrice * 7.5;
+            let silverNisabValue = marketSilverPrice * 52.5;
             
-            let applicableNisab = (getVal('cash') > 0 || getVal('silverWeight') > 0 || getVal('business') > 0) ? silverNisab : goldNisab;
-            regularZakat = netWealth >= applicableNisab ? netWealth * 0.025 : 0;
+            // সোনা বাদে বাকি নগদ ও লিকুইড সম্পদের যোগফল
+            let otherAssets = cash + (silverWeight * marketSilverPrice) + business;
+            let netWealth = (cash + (goldWeight * marketGoldPrice) + (silverWeight * marketSilverPrice) + business) - debts;
+            
+            let isZakatApplicable = false;
+
+            // কন্ডিশনাল শরিয়াহ ফিল্টার
+            if (goldWeight > 0 && otherAssets === 0) {
+                // কেস ১: ইউজারের কাছে শুধু সোনা আছে, অন্য কিচ্ছু নেই। তখন ৭.৫ ভরি পূর্ণ হওয়া বাধ্যতামূলক।
+                if (goldWeight >= 7.5 && netWealth >= goldNisabValue) {
+                    isZakatApplicable = true;
+                }
+            } else {
+                // কেস ২: মিক্সড অ্যাসেট আছে (সোনা + সামান্য ক্যাশ/রূপা/ব্যবসার মাল)। রূপার নিসাব প্রযোজ্য হবে।
+                if (netWealth >= silverNisabValue) {
+                    isZakatApplicable = true;
+                }
+            }
+
+            regularZakat = isZakatApplicable ? netWealth * 0.025 : 0;
 
             zakatStatus.className = "status-msg " + (regularZakat > 0 ? "success-msg" : "danger-msg");
-            zakatStatus.innerText = regularZakat > 0 ? "Personal Zakat: Applicable (Farz) based on Nisab." : "Personal Zakat: Not applicable (Below Nisab).";
+            zakatStatus.innerText = regularZakat > 0 ? "Personal Zakat: Applicable (Farz) based on Shariah Nisab." : "Personal Zakat: Not applicable (Below Nisab threshold).";
             zakatStatus.style.display = 'block';
             
             document.getElementById('netWealthDisplay').innerText = netWealth.toLocaleString('en-US');
@@ -345,7 +366,7 @@
             document.getElementById('totalZakat').innerText = regularZakat.toLocaleString('en-US', {minimumFractionDigits: 2});
         }
 
-        // 2. USHR MODE
+        // 2. USHR MODE (STRICT PARSEFLOAT CONCATENATION FIX)
         if (mode === 'ushr') {
             const USHR_NISAB_KG = 612;
             let meetsUshrCondition = false;
@@ -357,6 +378,7 @@
 
             for (let i = 0; i < names.length; i++) {
                 let price = prices[i].value !== "" ? parseFloat(prices[i].value) : 0;
+                // জাভাস্ক্রিপ্ট যাতে টেক্সট যোগ না করে, তাই ইনপুট নেওয়ার সময়েই এক্সপ্লিসিটলি parseFloat করা হলো
                 let rain = rainWeights[i].value !== "" ? parseFloat(rainWeights[i].value) : 0;
                 let irrig = irrigWeights[i].value !== "" ? parseFloat(irrigWeights[i].value) : 0;
                 let totalCropWeight = rain + irrig;
