@@ -28,11 +28,17 @@
       padding-bottom: 12px;
       border-bottom: 2px solid #4c9a2a;
     }
-    /* Tabs */
-    .tabs {
+    /* Tabs & Currency Flexbox */
+    .top-controls {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
+      align-items: center;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex: 3;
     }
     .tab {
       flex: 1;
@@ -55,6 +61,20 @@
       background: #e8f5e9;
       border-color: #4c9a2a;
       color: #1e5631;
+    }
+    .currency-box {
+      flex: 1;
+    }
+    .currency-box select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #b0bec5;
+      border-radius: 8px;
+      background: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e5631;
+      cursor: pointer;
     }
     /* Sections */
     .section { display: none; }
@@ -211,6 +231,7 @@
       border-radius: 0 6px 6px 0;    }
     /* Responsive */
     @media (max-width: 480px) {
+      .top-controls { flex-direction: column; align-items: stretch; gap: 8px; }
       .row { flex-direction: column; gap: 0; }
       h1 { font-size: 18px; }
     }
@@ -220,9 +241,18 @@
 <div class="wrap">
   <h1>Zakat &amp; Ushr Calculator</h1>
   
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('zakat', this)">&#9654; Zakat Calculator</button>
-    <button class="tab" onclick="switchTab('ushr', this)">&#9654; Ushr Calculator</button>
+  <div class="top-controls">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('zakat', this)">&#9654; Zakat</button>
+      <button class="tab" onclick="switchTab('ushr', this)">&#9654; Ushr</button>
+    </div>
+    <div class="currency-box">
+      <select id="global-currency" onchange="updateCurrencyLabels()">
+        <option value="BDT">BDT (৳)</option>
+        <option value="USD">USD ($)</option>
+        <option value="SAR">SAR (ر.স)</option>
+      </select>
+    </div>
   </div>
 
   <div class="section active" id="sec-zakat">
@@ -231,14 +261,14 @@
       <div class="row">
         <div class="fg">
           <label for="z-goldRate">Gold Rate (per Vhari/Tola)</label>
-          <input type="number" id="z-goldRate" placeholder="e.g. 95000" min="0" step="any" oninput="updateNisabHints()">
+          <input type="number" id="z-goldRate" placeholder="Fetching live rate..." min="0" step="any" oninput="updateNisabHints()">
         </div>
         <div class="fg">
           <label for="z-silverRate">Silver Rate (per Vhari/Tola)</label>
-          <input type="number" id="z-silverRate" placeholder="e.g. 1200" min="0" step="any" oninput="updateNisabHints()">
+          <input type="number" id="z-silverRate" placeholder="Fetching live rate..." min="0" step="any" oninput="updateNisabHints()">
         </div>
       </div>
-      <div id="nisab-hint" class="hint"></div>
+      <div id="nisab-hint" class="hint">Loading global commodity indices...</div>
     </div>
 
     <div class="card">
@@ -300,7 +330,7 @@
           </div>
           <div class="row">
             <div class="fg">
-              <label>Crop Yield Value (Currency)</label>
+              <label>Crop Yield Value (<span class="curr-label">BDT</span>)</label>
               <input type="number" class="u-yieldVal" placeholder="0" min="0" step="any">
             </div>
             <div class="fg">
@@ -338,9 +368,65 @@
 </div>
 
 <script>
+  /* ── Get Current Currency Code ── */
+  function getCurrency() {
+    return document.getElementById('global-currency').value;
+  }
+
+  /* ── Dynamic Label Sync ── */
+  function updateCurrencyLabels() {
+    const activeCurrency = getCurrency();
+    document.querySelectorAll('.curr-label').forEach(el => {
+      el.textContent = activeCurrency;
+    });
+    // Refresh outputs instantly if already calculated
+    updateNisabHints();
+    if(document.getElementById('z-results').style.display === 'block') calcZakat();
+    if(document.getElementById('u-results').style.display === 'block') calcUshr();
+  }
+
+  /* ── API Integration Async Engine ── */
+  async function fetchLiveMarketRates() {
+    try {
+      const metalRes = await fetch('https://open.er-api.com/v6/latest/USD');
+      if (!metalRes.ok) throw new Error("Currency network error");
+      const currencyData = await metalRes.json();
+      
+      const bdtRate = currencyData.rates.BDT || 118.50; 
+
+      const commodityRes = await fetch('https://api.metals.dev/v1/latest?api_key=FREE_KEY');
+      
+      let goldUSDPerOunce = 2350; 
+      let silverUSDPerOunce = 29.50;
+
+      if (commodityRes.ok) {
+        const commodityData = await commodityRes.json();
+        if (commodityData.status === 'success' && commodityData.rates) {
+          goldUSDPerOunce = commodityData.rates.gold || goldUSDPerOunce;
+          silverUSDPerOunce = commodityData.rates.silver || silverUSDPerOunce;
+        }
+      }
+
+      const goldVhariBDT = Math.round((goldUSDPerOunce / 2.66667) * bdtRate);
+      const silverVhariBDT = Math.round((silverUSDPerOunce / 2.66667) * bdtRate);
+
+      document.getElementById('z-goldRate').value = goldVhariBDT;
+      document.getElementById('z-silverRate').value = silverVhariBDT;
+      
+      updateNisabHints();
+    } catch (err) {
+      console.warn("Using standard fallback array metrics:", err);
+      document.getElementById('z-goldRate').value = 115500;
+      document.getElementById('z-silverRate').value = 2100;
+      updateNisabHints();
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', fetchLiveMarketRates);
+
   /* ── Helpers ── */
   function fmt(n) {
-    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + getCurrency();
   }
   function val(id) {
     return parseFloat(document.getElementById(id).value) || 0;
@@ -384,7 +470,7 @@
       </div>
       <div class="row">
         <div class="fg">
-          <label>Crop Yield Value (Currency)</label>
+          <label>Crop Yield Value (<span class="curr-label">${getCurrency()}</span>)</label>
           <input type="number" class="u-yieldVal" placeholder="0" min="0" step="any">
         </div>
         <div class="fg">
@@ -433,7 +519,7 @@
     if (netWealth <= 0) {
       isApplicable = false;
       nisabLabel   = 'N/A';
-      nisabValue   = 0;
+      nisabValue = 0;
       noteText     = 'Your net wealth is zero or negative after deducting liabilities. Zakat is not applicable.';
     } else if (!hasMixed && goldWeight > 0) {
       nisabLabel = 'Gold (7.5 Tola)';
@@ -502,7 +588,6 @@
     let totalUshrPayable = 0;
     let weightEnteredForAnyCrop = false;
 
-    // First structural iteration pass: evaluate portfolio metrics & weight checks
     for (let i = 0; i < yieldElements.length; i++) {
       let yVal = parseFloat(yieldElements[i].value) || 0;
       let wVal = parseFloat(weightElements[i].value) || 0;
@@ -519,7 +604,7 @@
       return;
     }
 
-    const NISAB_KG = 653; // 5 Wasaq
+    const NISAB_KG = 653; 
     let meetsUshrCondition = false;
     let wtStatusHtml = '';
     let noteText = '';
@@ -527,21 +612,19 @@
     if (weightEnteredForAnyCrop) {
       if (totalPortfolioWeight >= NISAB_KG) {
         meetsUshrCondition = true;
-        wtStatusHtml = '<span class="badge badge-yes">' + fmt(totalPortfolioWeight) + ' kg ≥ 653 kg — Nisab met ✓</span>';
+        wtStatusHtml = '<span class="badge badge-yes">' + totalPortfolioWeight.toLocaleString() + ' kg ≥ 653 kg — Nisab met ✓</span>';
         noteText = 'Your combined harvest weight meets the 5 Wasaq Nisab threshold (653 kg). Ushr is due on the full portfolio calculated crop by crop.';
       } else {
         meetsUshrCondition = false;
-        wtStatusHtml = '<span class="badge badge-no">' + fmt(totalPortfolioWeight) + ' kg &lt; 653 kg — Below Nisab</span>';
-        noteText = 'Your combined harvest weight (' + fmt(totalPortfolioWeight) + ' kg) is below the minimum Nisab of 5 Wasaq (653 kg). No Ushr is due.';
+        wtStatusHtml = '<span class="badge badge-no">' + totalPortfolioWeight.toLocaleString() + ' kg &lt; 653 kg — Below Nisab</span>';
+        noteText = 'Your combined harvest weight (' + totalPortfolioWeight.toLocaleString() + ' kg) is below the minimum Nisab of 5 Wasaq (653 kg). No Ushr is due.';
       }
     } else {
-      // Shariah fallback condition loop if weight metrics are explicitly absent
       meetsUshrCondition = true;
       wtStatusHtml = '<span class="badge badge-warn">Weights missing — calculated on yield values only</span>';
       noteText = 'Harvest weights were missing across crop records. Ushr has been computed directly from financial yields. Verify with a scholar if cumulative metrics remain under 653 kg.';
     }
 
-    // Second structural pass: execute segmented dynamic evaluations per field conditional structure
     if (meetsUshrCondition) {
       for (let i = 0; i < yieldElements.length; i++) {
         let yVal = parseFloat(yieldElements[i].value) || 0;
@@ -552,9 +635,8 @@
       }
     }
 
-    // Render elements out onto target UI DOM blocks
     setText('u-yieldDisp', fmt(totalYieldVal));
-    setText('u-weightDisp', weightEnteredForAnyCrop ? fmt(totalPortfolioWeight) + ' kg' : 'Not entered');
+    setText('u-weightDisp', weightEnteredForAnyCrop ? totalPortfolioWeight.toLocaleString() + ' kg' : 'Not entered');
     setText('u-nisabWt', '653 kg (5 Wasaq)');
     setText('u-payable', fmt(totalUshrPayable));
     setText('u-note', noteText);
