@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zakat & Ushr Calculator</title>
+  <title>Zakat &amp; Ushr Calculator</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f4f7f6;
@@ -16,12 +15,10 @@
       justify-content: center;
       padding: 24px 16px;
     }
-
     .wrap {
       width: 100%;
       max-width: 640px;
     }
-
     h1 {
       text-align: center;
       color: #1e5631;
@@ -31,14 +28,12 @@
       padding-bottom: 12px;
       border-bottom: 2px solid #4c9a2a;
     }
-
     /* Tabs */
     .tabs {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
     }
-
     .tab {
       flex: 1;
       padding: 11px;
@@ -51,23 +46,19 @@
       color: #555;
       transition: all 0.2s;
     }
-
     .tab.active {
       background: #1e5631;
       color: #ffffff;
       border-color: #1e5631;
     }
-
     .tab:hover:not(.active) {
       background: #e8f5e9;
       border-color: #4c9a2a;
       color: #1e5631;
     }
-
     /* Sections */
     .section { display: none; }
     .section.active { display: block; }
-
     /* Cards */
     .card {
       background: #ffffff;
@@ -77,7 +68,17 @@
       margin-bottom: 14px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     }
-
+    .crop-item {
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .crop-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
     .card-title {
       font-size: 11px;
       font-weight: 700;
@@ -86,14 +87,11 @@
       letter-spacing: 0.07em;
       margin-bottom: 14px;
     }
-
     /* Form */
     .row { display: flex; gap: 14px; }
     .row .fg { flex: 1; }
-
     .fg { margin-bottom: 12px; }
     .fg:last-child { margin-bottom: 0; }
-
     .fg label {
       display: block;
       font-size: 13px;
@@ -101,7 +99,6 @@
       margin-bottom: 5px;
       font-weight: 500;
     }
-
     .fg input, .fg select {
       width: 100%;
       padding: 9px 12px;
@@ -112,21 +109,18 @@
       color: #333;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-
     .fg input:focus, .fg select:focus {
       outline: none;
       border-color: #4c9a2a;
       box-shadow: 0 0 0 3px rgba(76,154,42,0.15);
     }
-
     .hint {
       font-size: 12px;
       color: #777;
       margin-top: 7px;
       line-height: 1.5;
     }
-
-    /* Button */
+    /* Buttons */
     .calc-btn {
       width: 100%;
       padding: 12px;
@@ -140,9 +134,36 @@
       margin-top: 4px;
       transition: background 0.2s;
     }
-
     .calc-btn:hover { background: #2e7d4f; }
     .calc-btn:active { background: #16401f; }
+    
+    .add-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 5px;
+      transition: background 0.2s;
+    }
+    .add-btn:hover { background: #2980b9; }
+    
+    .remove-btn {
+      position: absolute;
+      right: 0;
+      top: -4px;
+      background: transparent;
+      color: #e74c3c;
+      border: none;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .remove-btn:hover { text-decoration: underline; }
 
     /* Results */
     .results {
@@ -153,7 +174,6 @@
       margin-top: 14px;
       background: #f0f7f1;
     }
-
     .res-row {
       display: flex;
       justify-content: space-between;
@@ -162,16 +182,12 @@
       border-bottom: 1px solid #d8e8db;
       font-size: 14px;
     }
-
     .res-row:last-child { border-bottom: none; }
-
     .res-label { color: #555; }
     .res-val { font-weight: 600; color: #222; }
-
     .big-row { padding: 12px 0 4px; }
     .big-row .res-label { font-size: 15px; color: #1e5631; font-weight: 600; }
     .big-val { font-size: 22px; font-weight: 700; color: #c62828; }
-
     /* Badges */
     .badge {
       display: inline-block;
@@ -180,11 +196,9 @@
       font-size: 12px;
       font-weight: 600;
     }
-
     .badge-yes { background: #e8f5e9; color: #1e5631; }
     .badge-no  { background: #f5f5f5; color: #777; }
     .badge-warn { background: #fff3e0; color: #e65100; }
-
     /* Note block */
     .note {
       font-size: 12px;
@@ -194,9 +208,7 @@
       padding: 10px 14px;
       border-left: 3px solid #4c9a2a;
       background: #f9fdf9;
-      border-radius: 0 6px 6px 0;
-    }
-
+      border-radius: 0 6px 6px 0;    }
     /* Responsive */
     @media (max-width: 480px) {
       .row { flex-direction: column; gap: 0; }
@@ -205,18 +217,15 @@
   </style>
 </head>
 <body>
-
 <div class="wrap">
   <h1>Zakat &amp; Ushr Calculator</h1>
-
+  
   <div class="tabs">
     <button class="tab active" onclick="switchTab('zakat', this)">&#9654; Zakat Calculator</button>
     <button class="tab" onclick="switchTab('ushr', this)">&#9654; Ushr Calculator</button>
   </div>
 
-  <!-- ═══════════════════════ ZAKAT SECTION ═══════════════════════ -->
   <div class="section active" id="sec-zakat">
-
     <div class="card">
       <div class="card-title">Nisab Reference Rates</div>
       <div class="row">
@@ -279,53 +288,48 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════ USHR SECTION ═══════════════════════ -->
   <div class="section" id="sec-ushr">
-
     <div class="card">
-      <div class="card-title">Crop Details</div>
-      <div class="fg">
-        <label for="u-cropName">Crop Name (optional)</label>
-        <input type="text" id="u-cropName" placeholder="e.g. Rice, Wheat, Corn">
+      <div class="card-title">Agricultural Portfolio (Multi-Crop)</div>
+      
+      <div id="crop-list">
+        <div class="crop-item">
+          <div class="fg">
+            <label>Crop Name (optional)</label>
+            <input type="text" class="u-cropName" placeholder="e.g. Rice, Wheat, Corn">
+          </div>
+          <div class="row">
+            <div class="fg">
+              <label>Crop Yield Value (Currency)</label>
+              <input type="number" class="u-yieldVal" placeholder="0" min="0" step="any">
+            </div>
+            <div class="fg">
+              <label>Harvest Weight (kg)</label>
+              <input type="number" class="u-weight" placeholder="0" min="0" step="any">
+            </div>
+          </div>
+          <div class="fg">
+            <label>Irrigation Method</label>
+            <select class="u-irrigation">
+              <option value="rain">Natural rainfall / river / flood (no cost) — Ushr = 10%</option>
+              <option value="paid">Pump, canal fees, or other paid means — Ushr = 5%</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div class="fg">
-        <label for="u-yieldVal">Total Crop Yield Value (in currency)</label>
-        <input type="number" id="u-yieldVal" placeholder="0" min="0" step="any">
-        <div class="hint">Enter the total market value of your harvest at time of collection.</div>
-      </div>
-    </div>
 
-    <div class="card">
-      <div class="card-title">Irrigation Method</div>
-      <div class="fg">
-        <label for="u-irrigation">How is this land irrigated?</label>
-        <select id="u-irrigation" onchange="updateIrrHint()">
-          <option value="rain">Natural rainfall / river / flood (no cost) — Ushr = 10%</option>
-          <option value="paid">Pump, canal fees, or other paid means — Ushr = 5%</option>
-        </select>
-        <div class="hint" id="u-irr-hint">Natural irrigation (rain-fed): the full Ushr rate of 10% applies.</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Nisab by Weight (Optional)</div>
-      <div class="hint" style="margin-bottom:12px;">The Nisab for Ushr is 5 Wasaq = approx. 653 kg of the staple crop. Enter your harvest weight to verify eligibility.</div>
-      <div class="fg">
-        <label for="u-weight">Total Harvest Weight (kg)</label>
-        <input type="number" id="u-weight" placeholder="0" min="0" step="any">
-      </div>
+      <button type="button" class="add-btn" onclick="addCropField()">+ Add Another Crop</button>
     </div>
 
     <button class="calc-btn" onclick="calcUshr()">Calculate Ushr</button>
 
     <div class="results" id="u-results">
-      <div class="res-row"><span class="res-label">Crop Yield Value</span><span class="res-val" id="u-yieldDisp">—</span></div>
-      <div class="res-row"><span class="res-label">Irrigation Type</span><span class="res-val" id="u-irrDisp">—</span></div>
-      <div class="res-row"><span class="res-label">Ushr Rate Applied</span><span class="res-val" id="u-rateDisp">—</span></div>
+      <div class="res-row"><span class="res-label">Total Portfolio Crop Value</span><span class="res-val" id="u-yieldDisp">—</span></div>
+      <div class="res-row"><span class="res-label">Combined Portfolio Weight</span><span class="res-val" id="u-weightDisp">—</span></div>
       <div class="res-row"><span class="res-label">Nisab Threshold (Weight)</span><span class="res-val" id="u-nisabWt">—</span></div>
       <div class="res-row"><span class="res-label">Weight Nisab Status</span><span id="u-wtStatus"></span></div>
       <div class="res-row big-row">
-        <span class="res-label">Ushr Payable</span>
+        <span class="res-label">Total Ushr Payable</span>
         <span class="big-val" id="u-payable">0.00</span>
       </div>
       <p class="note" id="u-note"></p>
@@ -367,21 +371,41 @@
     document.getElementById('nisab-hint').textContent = hint;
   }
 
-  /* ── Irrigation hint ── */
-  function updateIrrHint() {
-    const v = document.getElementById('u-irrigation').value;
-    document.getElementById('u-irr-hint').textContent = v === 'rain'
-      ? 'Natural irrigation (rain-fed): the full Ushr rate of 10% applies.'
-      : 'Paid irrigation: the reduced Ushr rate of 5% applies due to farming expenses incurred.';
+  /* ── Add/Remove Multi-Crop Fields ── */
+  function addCropField() {
+    const list = document.getElementById('crop-list');
+    const div = document.createElement('div');
+    div.className = 'crop-item';
+    div.innerHTML = `
+      <button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕ Remove</button>
+      <div class="fg">
+        <label>Crop Name (optional)</label>
+        <input type="text" class="u-cropName" placeholder="e.g. Rice, Wheat, Corn">
+      </div>
+      <div class="row">
+        <div class="fg">
+          <label>Crop Yield Value (Currency)</label>
+          <input type="number" class="u-yieldVal" placeholder="0" min="0" step="any">
+        </div>
+        <div class="fg">
+          <label>Harvest Weight (kg)</label>
+          <input type="number" class="u-weight" placeholder="0" min="0" step="any">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Irrigation Method</label>
+        <select class="u-irrigation">
+          <option value="rain">Natural rainfall / river / flood (no cost) — Ushr = 10%</option>
+          <option value="paid">Pump, canal fees, or other paid means — Ushr = 5%</option>
+        </select>
+      </div>
+    `;
+    list.appendChild(div);
   }
 
   /* ══════════════════════════════════════════════════════════
      ZAKAT CALCULATION
-     Full Shariah-compliant Nisab logic:
-     - Gold-only portfolio  → Gold Nisab  (7.5 Tola)
-     - Mixed/other assets   → Silver Nisab (52.5 Tola) — majority Shariah opinion
-     - No Zakat if net wealth ≤ 0 or below Nisab
-  ══════════════════════════════════════════════════════════ */
+     ══════════════════════════════════════════════════════════ */
   function calcZakat() {
     const goldWeight   = val('z-goldWeight');
     const goldRate     = val('z-goldRate');
@@ -396,8 +420,8 @@
     const totalAssets    = totalGoldVal + totalSilverVal + cash + business;
     const netWealth      = Math.max(0, totalAssets - debts);
 
-    const goldNisab   = 7.5  * goldRate;    /* 7.5 Tola  */
-    const silverNisab = 52.5 * silverRate;  /* 52.5 Tola */
+    const goldNisab   = 7.5  * goldRate;
+    const silverNisab = 52.5 * silverRate;
 
     let isApplicable = false;
     let nisabLabel   = '';
@@ -407,33 +431,27 @@
     const hasMixed = (silverWeight > 0 || cash > 0 || business > 0);
 
     if (netWealth <= 0) {
-      /* ── Zero / negative net wealth ── */
       isApplicable = false;
       nisabLabel   = 'N/A';
       nisabValue   = 0;
       noteText     = 'Your net wealth is zero or negative after deducting liabilities. Zakat is not applicable.';
-
     } else if (!hasMixed && goldWeight > 0) {
-      /* ── Pure gold portfolio: use Gold Nisab ── */
       nisabLabel = 'Gold (7.5 Tola)';
       if (goldRate === 0) {
         noteText  = 'Please enter the current gold rate to determine the Nisab threshold.';
         nisabValue = 0;
       } else {
         nisabValue = goldNisab;
-        if (netWealth >= goldNisab) {
+        if ((totalGoldVal - debts) >= goldNisab) {
           isApplicable = true;
           noteText = 'Your gold holdings meet the Gold Nisab (7.5 Tola). Zakat is due at 2.5% on your net wealth.';
         } else {
           noteText = 'Your gold holdings are below the Gold Nisab of 7.5 Tola. No Zakat is due.';
         }
       }
-
     } else {
-      /* ── Mixed or non-gold portfolio: use Silver Nisab (majority opinion) ── */
       nisabLabel = 'Silver (52.5 Tola)';
       if (silverRate === 0 && goldRate > 0) {
-        /* Fallback: use Gold Nisab if only gold rate is provided */
         nisabLabel = 'Gold (7.5 Tola) — fallback';
         nisabValue = goldNisab;
         if (netWealth >= goldNisab) {
@@ -458,7 +476,6 @@
 
     const zakatPayable = isApplicable ? (netWealth * 0.025) : 0;
 
-    /* ── Render ── */
     setText('z-totalAssets', fmt(totalAssets));
     setText('z-totalDebts',  fmt(debts));
     setText('z-netWealth',   fmt(netWealth));
@@ -466,66 +483,84 @@
     setText('z-nisabVal',    nisabValue > 0 ? fmt(nisabValue) : 'Enter rate above');
     setText('z-payable',     fmt(zakatPayable));
     setText('z-note',        noteText);
-
     setHTML('z-status', isApplicable
       ? '<span class="badge badge-yes">Applicable ✓</span>'
       : '<span class="badge badge-no">Not Applicable</span>');
-
     document.getElementById('z-results').style.display = 'block';
   }
 
   /* ══════════════════════════════════════════════════════════
-     USHR CALCULATION
-     - 10% for natural/rain-fed irrigation
-     - 5%  for paid/pump irrigation
-     - Nisab = 5 Wasaq ≈ 653 kg
-  ══════════════════════════════════════════════════════════ */
+     DYNAMIC MULTI-CROP USHR CALCULATION
+     ══════════════════════════════════════════════════════════ */
   function calcUshr() {
-    const yieldVal = val('u-yieldVal');
-    const weight   = val('u-weight');
-    const irrType  = document.getElementById('u-irrigation').value;
+    const yieldElements = document.getElementsByClassName('u-yieldVal');
+    const weightElements = document.getElementsByClassName('u-weight');
+    const irrElements = document.getElementsByClassName('u-irrigation');
 
-    if (yieldVal <= 0) {
-      alert('Please enter a crop yield value greater than zero.');
+    let totalYieldVal = 0;
+    let totalPortfolioWeight = 0;
+    let totalUshrPayable = 0;
+    let weightEnteredForAnyCrop = false;
+
+    // First structural iteration pass: evaluate portfolio metrics & weight checks
+    for (let i = 0; i < yieldElements.length; i++) {
+      let yVal = parseFloat(yieldElements[i].value) || 0;
+      let wVal = parseFloat(weightElements[i].value) || 0;
+      
+      totalYieldVal += yVal;
+      if (weightElements[i].value !== "") {
+        weightEnteredForAnyCrop = true;
+        totalPortfolioWeight += wVal;
+      }
+    }
+
+    if (totalYieldVal <= 0) {
+      alert('Please enter crop yield values greater than zero.');
       return;
     }
 
-    const rate      = irrType === 'rain' ? 0.10 : 0.05;
-    const rateLabel = irrType === 'rain' ? '10% (natural irrigation)' : '5% (paid irrigation)';
-    const irrLabel  = irrType === 'rain' ? 'Natural / rainfall' : 'Pump / paid means';
-    const NISAB_KG  = 653;
-
+    const NISAB_KG = 653; // 5 Wasaq
+    let meetsUshrCondition = false;
     let wtStatusHtml = '';
-    let noteText     = '';
-    let ushrPayable  = 0;
+    let noteText = '';
 
-    if (weight > 0) {
-      if (weight >= NISAB_KG) {
-        wtStatusHtml = '<span class="badge badge-yes">' + weight.toLocaleString() + ' kg ≥ 653 kg — Nisab met ✓</span>';
-        ushrPayable  = yieldVal * rate;
-        noteText     = 'Your harvest weight meets the 5 Wasaq Nisab (653 kg). Ushr is due on the full yield value at the ' + rateLabel + ' rate.';
+    if (weightEnteredForAnyCrop) {
+      if (totalPortfolioWeight >= NISAB_KG) {
+        meetsUshrCondition = true;
+        wtStatusHtml = '<span class="badge badge-yes">' + fmt(totalPortfolioWeight) + ' kg ≥ 653 kg — Nisab met ✓</span>';
+        noteText = 'Your combined harvest weight meets the 5 Wasaq Nisab threshold (653 kg). Ushr is due on the full portfolio calculated crop by crop.';
       } else {
-        wtStatusHtml = '<span class="badge badge-no">' + weight.toLocaleString() + ' kg &lt; 653 kg — Below Nisab</span>';
-        ushrPayable  = 0;
-        noteText     = 'Your harvest weight (' + weight.toLocaleString() + ' kg) is below the Nisab of 5 Wasaq (653 kg). Ushr is not due on this harvest.';
+        meetsUshrCondition = false;
+        wtStatusHtml = '<span class="badge badge-no">' + fmt(totalPortfolioWeight) + ' kg &lt; 653 kg — Below Nisab</span>';
+        noteText = 'Your combined harvest weight (' + fmt(totalPortfolioWeight) + ' kg) is below the minimum Nisab of 5 Wasaq (653 kg). No Ushr is due.';
       }
     } else {
-      wtStatusHtml = '<span class="badge badge-warn">Weight not entered — calculated on value only</span>';
-      ushrPayable  = yieldVal * rate;
-      noteText     = 'Harvest weight was not entered, so the weight-based Nisab could not be verified. Ushr has been calculated on the yield value. Please verify with a scholar if your harvest may be near or below the 653 kg Nisab threshold.';
+      // Shariah fallback condition loop if weight metrics are explicitly absent
+      meetsUshrCondition = true;
+      wtStatusHtml = '<span class="badge badge-warn">Weights missing — calculated on yield values only</span>';
+      noteText = 'Harvest weights were missing across crop records. Ushr has been computed directly from financial yields. Verify with a scholar if cumulative metrics remain under 653 kg.';
     }
 
-    setText('u-yieldDisp', fmt(yieldVal));
-    setText('u-irrDisp',   irrLabel);
-    setText('u-rateDisp',  rateLabel);
-    setText('u-nisabWt',   '653 kg (5 Wasaq)');
-    setText('u-payable',   fmt(ushrPayable));
-    setText('u-note',      noteText);
-    setHTML('u-wtStatus',  wtStatusHtml);
+    // Second structural pass: execute segmented dynamic evaluations per field conditional structure
+    if (meetsUshrCondition) {
+      for (let i = 0; i < yieldElements.length; i++) {
+        let yVal = parseFloat(yieldElements[i].value) || 0;
+        let irrType = irrElements[i].value;
+        let rate = (irrType === 'rain') ? 0.10 : 0.05;
+        
+        totalUshrPayable += (yVal * rate);
+      }
+    }
 
+    // Render elements out onto target UI DOM blocks
+    setText('u-yieldDisp', fmt(totalYieldVal));
+    setText('u-weightDisp', weightEnteredForAnyCrop ? fmt(totalPortfolioWeight) + ' kg' : 'Not entered');
+    setText('u-nisabWt', '653 kg (5 Wasaq)');
+    setText('u-payable', fmt(totalUshrPayable));
+    setText('u-note', noteText);
+    setHTML('u-wtStatus', wtStatusHtml);
     document.getElementById('u-results').style.display = 'block';
   }
 </script>
-
 </body>
 </html>
