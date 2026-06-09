@@ -368,18 +368,36 @@
 </div>
 
 <script>
+  /* ── API Data Cache Globals ── */
+  let baseGoldUSD = 2350;     // Baseline fallbacks if APIs trigger rate-limits
+  let baseSilverUSD = 29.50;  
+  let fxRates = { BDT: 118.50, USD: 1, SAR: 3.75 };
+
   /* ── Get Current Currency Code ── */
   function getCurrency() {
     return document.getElementById('global-currency').value;
   }
 
-  /* ── Dynamic Label Sync ── */
+  /* ── Dynamic Currency UI & Field Live Recalculation ── */
   function updateCurrencyLabels() {
     const activeCurrency = getCurrency();
+    
+    // 1. Update text currency tags inside inputs globally
     document.querySelectorAll('.curr-label').forEach(el => {
       el.textContent = activeCurrency;
     });
-    // Refresh outputs instantly if already calculated
+
+    // 2. Dynamic multi-currency rate switcher for Reference boxes
+    const conversionMultiplier = fxRates[activeCurrency] || 1;
+    
+    // Convert USD per Ounce into Active Currency per Bhari (1 Ounce = 2.66667 Bhari)
+    const computedGold = Math.round((baseGoldUSD / 2.66667) * conversionMultiplier);
+    const computedSilver = Math.round((baseSilverUSD / 2.66667) * conversionMultiplier);
+
+    document.getElementById('z-goldRate').value = computedGold;
+    document.getElementById('z-silverRate').value = computedSilver;
+
+    // 3. Immediately refresh view calculations and format tags dynamically
     updateNisabHints();
     if(document.getElementById('z-results').style.display === 'block') calcZakat();
     if(document.getElementById('u-results').style.display === 'block') calcUshr();
@@ -392,33 +410,25 @@
       if (!metalRes.ok) throw new Error("Currency network error");
       const currencyData = await metalRes.json();
       
-      const bdtRate = currencyData.rates.BDT || 118.50; 
+      // Cache dynamic global currency ratios safely
+      fxRates.BDT = currencyData.rates.BDT || 118.50;
+      fxRates.SAR = currencyData.rates.SAR || 3.75;
+      fxRates.USD = 1;
 
       const commodityRes = await fetch('https://api.metals.dev/v1/latest?api_key=FREE_KEY');
-      
-      let goldUSDPerOunce = 2350; 
-      let silverUSDPerOunce = 29.50;
-
       if (commodityRes.ok) {
         const commodityData = await commodityRes.json();
         if (commodityData.status === 'success' && commodityData.rates) {
-          goldUSDPerOunce = commodityData.rates.gold || goldUSDPerOunce;
-          silverUSDPerOunce = commodityData.rates.silver || silverUSDPerOunce;
+          baseGoldUSD = commodityData.rates.gold || baseGoldUSD;
+          baseSilverUSD = commodityData.rates.silver || baseSilverUSD;
         }
       }
 
-      const goldVhariBDT = Math.round((goldUSDPerOunce / 2.66667) * bdtRate);
-      const silverVhariBDT = Math.round((silverUSDPerOunce / 2.66667) * bdtRate);
-
-      document.getElementById('z-goldRate').value = goldVhariBDT;
-      document.getElementById('z-silverRate').value = silverVhariBDT;
-      
-      updateNisabHints();
+      // Initial execution mapping configuration
+      updateCurrencyLabels();
     } catch (err) {
-      console.warn("Using standard fallback array metrics:", err);
-      document.getElementById('z-goldRate').value = 115500;
-      document.getElementById('z-silverRate').value = 2100;
-      updateNisabHints();
+      console.warn("API limit fallback operational standard data mapped:", err);
+      updateCurrencyLabels();
     }
   }
 
