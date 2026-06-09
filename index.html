@@ -1,425 +1,531 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Shariah Zakat & Multi-Crop Ushr Calculator</title>
-    <style>
-        :root {
-            --primary-color: #1e5631;
-            --secondary-color: #4c9a2a;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zakat & Ushr Calculator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin-bottom: 25px;
-        }
-        .calculation-mode-box {
-            background: #f1f2f6;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px dashed #7f8c8d;
-        }
-        .calculation-mode-box label {
-            font-size: 1em;
-            color: #2c3e50;
-        }
-        .section {
-            margin-bottom: 25px;
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            background: #fafafa;
-            display: none;
-        }
-        .section h3 {
-            margin-top: 0;
-            color: #2980b9;
-            font-size: 1.1em;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
-        }
-        .market-section {
-            background: #eef9ff;
-            border: 1px solid #3498db;
-        }
-        .crop-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            position: relative;
-        }
-        .row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-        .col {
-            flex: 1;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 0.85em;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        select {
-            font-weight: bold;
-            background-color: #fff;
-        }
-        .btn-add {
-            background-color: #3498db;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .btn-remove {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            float: right;
-            font-size: 0.8em;
-        }
-        button.btn-calc {
-            width: 100%;
-            padding: 14px;
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 8px;
-            display: none;
-            background: #fdfefe;
-            border: 1px solid #ccc;
-        }
-        .status-msg {
-            font-weight: bold;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-        .success-msg { background-color: #e8f8f5; color: #27ae60; border-left: 4px solid #2ecc71; }
-        .danger-msg { background-color: #fdf2e9; color: #d35400; border-left: 4px solid #e67e22; }
-    </style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e5631;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #4c9a2a;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 11px;
+      border: 1px solid #b0bec5;
+      border-radius: 8px;
+      background: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: #1e5631;
+      color: #ffffff;
+      border-color: #1e5631;
+    }
+
+    .tab:hover:not(.active) {
+      background: #e8f5e9;
+      border-color: #4c9a2a;
+      color: #1e5631;
+    }
+
+    /* Sections */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Cards */
+    .card {
+      background: #ffffff;
+      border: 1px solid #dde3e0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 14px;
+    }
+
+    /* Form */
+    .row { display: flex; gap: 14px; }
+    .row .fg { flex: 1; }
+
+    .fg { margin-bottom: 12px; }
+    .fg:last-child { margin-bottom: 0; }
+
+    .fg label {
+      display: block;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .fg input, .fg select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 14px;
+      background: #fff;
+      color: #333;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .fg input:focus, .fg select:focus {
+      outline: none;
+      border-color: #4c9a2a;
+      box-shadow: 0 0 0 3px rgba(76,154,42,0.15);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #777;
+      margin-top: 7px;
+      line-height: 1.5;
+    }
+
+    /* Button */
+    .calc-btn {
+      width: 100%;
+      padding: 12px;
+      background: #1e5631;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.2s;
+    }
+
+    .calc-btn:hover { background: #2e7d4f; }
+    .calc-btn:active { background: #16401f; }
+
+    /* Results */
+    .results {
+      display: none;
+      border: 1px solid #dde3e0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-top: 14px;
+      background: #f0f7f1;
+    }
+
+    .res-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #d8e8db;
+      font-size: 14px;
+    }
+
+    .res-row:last-child { border-bottom: none; }
+
+    .res-label { color: #555; }
+    .res-val { font-weight: 600; color: #222; }
+
+    .big-row { padding: 12px 0 4px; }
+    .big-row .res-label { font-size: 15px; color: #1e5631; font-weight: 600; }
+    .big-val { font-size: 22px; font-weight: 700; color: #c62828; }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 11px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-yes { background: #e8f5e9; color: #1e5631; }
+    .badge-no  { background: #f5f5f5; color: #777; }
+    .badge-warn { background: #fff3e0; color: #e65100; }
+
+    /* Note block */
+    .note {
+      font-size: 12px;
+      color: #555;
+      margin-top: 12px;
+      line-height: 1.7;
+      padding: 10px 14px;
+      border-left: 3px solid #4c9a2a;
+      background: #f9fdf9;
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .row { flex-direction: column; gap: 0; }
+      h1 { font-size: 18px; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Smart Shariah Zakat & Ushr Calculator</h2>
-    <div class="subtitle">Dynamic Nisab Evaluation for Personal Wealth or Agricultural Yields</div>
+<div class="wrap">
+  <h1>Zakat &amp; Ushr Calculator</h1>
 
-    <div class="calculation-mode-box">
-        <label for="calcMode"><strong>Select What You Want to Calculate Today:</strong></label>
-        <select id="calcMode" onchange="toggleFormSections()" style="margin-top: 5px; padding: 12px; border-color: #2980b9;">
-            <option value="zakat">Zakat (Personal Wealth - Yearly)</option>
-            <option value="ushr">Ushr (Agricultural Crops - At Harvest)</option>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('zakat', this)">&#9654; Zakat Calculator</button>
+    <button class="tab" onclick="switchTab('ushr', this)">&#9654; Ushr Calculator</button>
+  </div>
+
+  <!-- ═══════════════════════ ZAKAT SECTION ═══════════════════════ -->
+  <div class="section active" id="sec-zakat">
+
+    <div class="card">
+      <div class="card-title">Nisab Reference Rates</div>
+      <div class="row">
+        <div class="fg">
+          <label for="z-goldRate">Gold Rate (per Vhari/Tola)</label>
+          <input type="number" id="z-goldRate" placeholder="e.g. 95000" min="0" step="any" oninput="updateNisabHints()">
+        </div>
+        <div class="fg">
+          <label for="z-silverRate">Silver Rate (per Vhari/Tola)</label>
+          <input type="number" id="z-silverRate" placeholder="e.g. 1200" min="0" step="any" oninput="updateNisabHints()">
+        </div>
+      </div>
+      <div id="nisab-hint" class="hint"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Your Assets</div>
+      <div class="row">
+        <div class="fg">
+          <label for="z-goldWeight">Gold Owned (Vhari/Tola)</label>
+          <input type="number" id="z-goldWeight" placeholder="0" min="0" step="any">
+        </div>
+        <div class="fg">
+          <label for="z-silverWeight">Silver Owned (Vhari/Tola)</label>
+          <input type="number" id="z-silverWeight" placeholder="0" min="0" step="any">
+        </div>
+      </div>
+      <div class="fg">
+        <label for="z-cash">Cash (in hand, bank &amp; savings)</label>
+        <input type="number" id="z-cash" placeholder="0" min="0" step="any">
+      </div>
+      <div class="fg">
+        <label for="z-business">Business Merchandise / Investments</label>
+        <input type="number" id="z-business" placeholder="0" min="0" step="any">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Liabilities</div>
+      <div class="fg">
+        <label for="z-debts">Short-term Debts Due Immediately</label>
+        <input type="number" id="z-debts" placeholder="0" min="0" step="any">
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calcZakat()">Calculate Zakat</button>
+
+    <div class="results" id="z-results">
+      <div class="res-row"><span class="res-label">Total Assets</span><span class="res-val" id="z-totalAssets">—</span></div>
+      <div class="res-row"><span class="res-label">Total Liabilities</span><span class="res-val" id="z-totalDebts">—</span></div>
+      <div class="res-row"><span class="res-label">Net Zakatable Wealth</span><span class="res-val" id="z-netWealth">—</span></div>
+      <div class="res-row"><span class="res-label">Nisab Standard Used</span><span class="res-val" id="z-nisabUsed">—</span></div>
+      <div class="res-row"><span class="res-label">Nisab Threshold Value</span><span class="res-val" id="z-nisabVal">—</span></div>
+      <div class="res-row"><span class="res-label">Zakat Status</span><span id="z-status"></span></div>
+      <div class="res-row big-row">
+        <span class="res-label">Zakat Payable (2.5%)</span>
+        <span class="big-val" id="z-payable">0.00</span>
+      </div>
+      <p class="note" id="z-note"></p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ USHR SECTION ═══════════════════════ -->
+  <div class="section" id="sec-ushr">
+
+    <div class="card">
+      <div class="card-title">Crop Details</div>
+      <div class="fg">
+        <label for="u-cropName">Crop Name (optional)</label>
+        <input type="text" id="u-cropName" placeholder="e.g. Rice, Wheat, Corn">
+      </div>
+      <div class="fg">
+        <label for="u-yieldVal">Total Crop Yield Value (in currency)</label>
+        <input type="number" id="u-yieldVal" placeholder="0" min="0" step="any">
+        <div class="hint">Enter the total market value of your harvest at time of collection.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Irrigation Method</div>
+      <div class="fg">
+        <label for="u-irrigation">How is this land irrigated?</label>
+        <select id="u-irrigation" onchange="updateIrrHint()">
+          <option value="rain">Natural rainfall / river / flood (no cost) — Ushr = 10%</option>
+          <option value="paid">Pump, canal fees, or other paid means — Ushr = 5%</option>
         </select>
+        <div class="hint" id="u-irr-hint">Natural irrigation (rain-fed): the full Ushr rate of 10% applies.</div>
+      </div>
     </div>
 
-    <div class="section market-section" id="marketSection">
-        <h3>1. Today's Official Market Rates (BAJUS)</h3>
-        <div class="row">
-            <div class="col">
-                <label>Gold Price (per Vhari / 22K):</label>
-                <input type="number" id="marketGoldPrice" value="229373" placeholder="e.g., 229373">
-            </div>
-            <div class="col">
-                <label>Silver Price (per Vhari / 22K):</label>
-                <input type="number" id="marketSilverPrice" value="5249" placeholder="e.g., 5249">
-            </div>
-        </div>
-        <p style="font-size: 0.8em; margin: 5px 0 0 0; color: #555;">Rates auto-filled using standard BAJUS metrics.</p>
+    <div class="card">
+      <div class="card-title">Nisab by Weight (Optional)</div>
+      <div class="hint" style="margin-bottom:12px;">The Nisab for Ushr is 5 Wasaq = approx. 653 kg of the staple crop. Enter your harvest weight to verify eligibility.</div>
+      <div class="fg">
+        <label for="u-weight">Total Harvest Weight (kg)</label>
+        <input type="number" id="u-weight" placeholder="0" min="0" step="any">
+      </div>
     </div>
 
-    <div class="section" id="zakatSection">
-        <h3>2. Wealth & Liabilities (Personal Zakat)</h3>
-        <div class="row">
-            <div class="col"><label>Gold Weight (Vhari):</label><input type="number" id="goldWeight" placeholder="0"></div>
-            <div class="col"><label>Silver Weight (Vhari):</label><input type="number" id="silverWeight" placeholder="0"></div>
-        </div>
-        <div class="row">
-            <div class="col"><label>Cash & Bank Balance:</label><input type="number" id="cash" placeholder="0"></div>
-            <div class="col"><label>Business Goods Value:</label><input type="number" id="business" placeholder="e.g., Stock, Trading Asset"></div>
-        </div>
-        <label>Deductible Short-term Debts / Liabilities:</label>
-        <input type="number" id="debts" placeholder="0">
-    </div>
+    <button class="calc-btn" onclick="calcUshr()">Calculate Ushr</button>
 
-    <div class="section" id="ushrSection">
-        <h3>2. Agricultural Crops (Ushr Portfolio)</h3>
-        <p style="font-size: 0.85em; color: #666;">Add each type of crop you harvested separately:</p>
-        
-        <div id="cropContainer">
-            <div class="crop-card">
-                <div class="row">
-                    <div class="col">
-                        <label>Crop Name:</label>
-                        <input type="text" class="cropName" placeholder="e.g., Rice, Wheat, Mango">
-                    </div>
-                    <div class="col">
-                        <label>Market Price (per KG):</label>
-                        <input type="number" class="cropPrice" placeholder="e.g., 50" min="1">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <label>Rain-fed Weight (KG):</label>
-                        <input type="number" class="cropRainWeight" placeholder="0">
-                    </div>
-                    <div class="col">
-                        <label>Irrigated Weight (KG):</label>
-                        <input type="number" class="cropIrrigWeight" placeholder="0">
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <button type="button" class="btn-add" onclick="addNewCropField()">+ Add Another Crop</button>
+    <div class="results" id="u-results">
+      <div class="res-row"><span class="res-label">Crop Yield Value</span><span class="res-val" id="u-yieldDisp">—</span></div>
+      <div class="res-row"><span class="res-label">Irrigation Type</span><span class="res-val" id="u-irrDisp">—</span></div>
+      <div class="res-row"><span class="res-label">Ushr Rate Applied</span><span class="res-val" id="u-rateDisp">—</span></div>
+      <div class="res-row"><span class="res-label">Nisab Threshold (Weight)</span><span class="res-val" id="u-nisabWt">—</span></div>
+      <div class="res-row"><span class="res-label">Weight Nisab Status</span><span id="u-wtStatus"></span></div>
+      <div class="res-row big-row">
+        <span class="res-label">Ushr Payable</span>
+        <span class="big-val" id="u-payable">0.00</span>
+      </div>
+      <p class="note" id="u-note"></p>
     </div>
-
-    <button class="btn-calc" onclick="calculateAll()">Calculate Due Amount</button>
-
-    <div class="result" id="resultBox">
-        <h3 style="text-align:center;">Evaluation Summary</h3>
-        <div id="zakatStatus" class="status-msg"></div>
-        <div id="ushrStatus" class="status-msg"></div>
-        
-        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;">
-            <p id="wealthDisplayRow"><strong>Net Personal Wealth Value:</strong> <span id="netWealthDisplay">0</span></p>
-            <p id="zakatPayableRow"><strong>Zakat Payable on Wealth (2.5%):</strong> <span id="regularZakat">0</span></p>
-            <p id="ushrPayableRow"><strong>Total Ushr Payable on Crops:</strong> <span id="cropZakat">0</span></p>
-            <hr>
-            <h3 style="color: #c0392b; text-align: right;">Total Due: <span id="totalZakat">0</span></h3>
-        </div>
-    </div>
+  </div>
 </div>
 
 <script>
-    window.onload = function() {
-        toggleFormSections();
-    };
+  /* ── Helpers ── */
+  function fmt(n) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function val(id) {
+    return parseFloat(document.getElementById(id).value) || 0;
+  }
+  function setText(id, text) {
+    document.getElementById(id).textContent = text;
+  }
+  function setHTML(id, html) {
+    document.getElementById(id).innerHTML = html;
+  }
 
-    function toggleFormSections() {
-        let mode = document.getElementById('calcMode').value;
-        let marketSec = document.getElementById('marketSection');
-        let zakatSec = document.getElementById('zakatSection');
-        let ushrSec = document.getElementById('ushrSection');
-        
-        document.getElementById('resultBox').style.display = 'none';
-        document.getElementById('zakatStatus').style.display = 'none';
-        document.getElementById('ushrStatus').style.display = 'none';
+  /* ── Tab switching ── */
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-' + tab).classList.add('active');
+    btn.classList.add('active');
+  }
 
-        if (mode === 'zakat') {
-            marketSec.style.display = 'block';
-            zakatSec.style.display = 'block';
-            ushrSec.style.display = 'none';
-        } else if (mode === 'ushr') {
-            marketSec.style.display = 'none';
-            zakatSec.style.display = 'none';
-            ushrSec.style.display = 'block';
+  /* ── Live Nisab hint ── */
+  function updateNisabHints() {
+    const gr = val('z-goldRate');
+    const sr = val('z-silverRate');
+    let hint = '';
+    if (gr > 0) hint += 'Gold Nisab (7.5 Tola): ' + fmt(7.5 * gr);
+    if (gr > 0 && sr > 0) hint += '   ·   ';
+    if (sr > 0) hint += 'Silver Nisab (52.5 Tola): ' + fmt(52.5 * sr);
+    document.getElementById('nisab-hint').textContent = hint;
+  }
+
+  /* ── Irrigation hint ── */
+  function updateIrrHint() {
+    const v = document.getElementById('u-irrigation').value;
+    document.getElementById('u-irr-hint').textContent = v === 'rain'
+      ? 'Natural irrigation (rain-fed): the full Ushr rate of 10% applies.'
+      : 'Paid irrigation: the reduced Ushr rate of 5% applies due to farming expenses incurred.';
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     ZAKAT CALCULATION
+     Full Shariah-compliant Nisab logic:
+     - Gold-only portfolio  → Gold Nisab  (7.5 Tola)
+     - Mixed/other assets   → Silver Nisab (52.5 Tola) — majority Shariah opinion
+     - No Zakat if net wealth ≤ 0 or below Nisab
+  ══════════════════════════════════════════════════════════ */
+  function calcZakat() {
+    const goldWeight   = val('z-goldWeight');
+    const goldRate     = val('z-goldRate');
+    const silverWeight = val('z-silverWeight');
+    const silverRate   = val('z-silverRate');
+    const cash         = val('z-cash');
+    const business     = val('z-business');
+    const debts        = val('z-debts');
+
+    const totalGoldVal   = goldWeight * goldRate;
+    const totalSilverVal = silverWeight * silverRate;
+    const totalAssets    = totalGoldVal + totalSilverVal + cash + business;
+    const netWealth      = Math.max(0, totalAssets - debts);
+
+    const goldNisab   = 7.5  * goldRate;    /* 7.5 Tola  */
+    const silverNisab = 52.5 * silverRate;  /* 52.5 Tola */
+
+    let isApplicable = false;
+    let nisabLabel   = '';
+    let nisabValue   = 0;
+    let noteText     = '';
+
+    const hasMixed = (silverWeight > 0 || cash > 0 || business > 0);
+
+    if (netWealth <= 0) {
+      /* ── Zero / negative net wealth ── */
+      isApplicable = false;
+      nisabLabel   = 'N/A';
+      nisabValue   = 0;
+      noteText     = 'Your net wealth is zero or negative after deducting liabilities. Zakat is not applicable.';
+
+    } else if (!hasMixed && goldWeight > 0) {
+      /* ── Pure gold portfolio: use Gold Nisab ── */
+      nisabLabel = 'Gold (7.5 Tola)';
+      if (goldRate === 0) {
+        noteText  = 'Please enter the current gold rate to determine the Nisab threshold.';
+        nisabValue = 0;
+      } else {
+        nisabValue = goldNisab;
+        if (netWealth >= goldNisab) {
+          isApplicable = true;
+          noteText = 'Your gold holdings meet the Gold Nisab (7.5 Tola). Zakat is due at 2.5% on your net wealth.';
+        } else {
+          noteText = 'Your gold holdings are below the Gold Nisab of 7.5 Tola. No Zakat is due.';
         }
-    }
+      }
 
-    function addNewCropField() {
-        let container = document.getElementById('cropContainer');
-        let card = document.createElement('div');
-        card.className = 'crop-card';
-        card.innerHTML = `
-            <button type="button" class="btn-remove" onclick="this.parentElement.remove()">X Remove</button>
-            <div class="row">
-                <div class="col">
-                    <label>Crop Name:</label>
-                    <input type="text" class="cropName" placeholder="e.g., Crop Name">
-                </div>
-                <div class="col">
-                    <label>Market Price (per KG):</label>
-                    <input type="number" class="cropPrice" placeholder="e.g., 50" min="1">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <label>Rain-fed Weight (KG):</label>
-                    <input type="number" class="cropRainWeight" placeholder="0">
-                </div>
-                <div class="col">
-                    <label>Irrigated Weight (KG):</label>
-                    <input type="number" class="cropIrrigWeight" placeholder="0">
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-    }
-
-    function getVal(id) {
-        let el = document.getElementById(id);
-        return el && el.value !== "" ? parseFloat(el.value) : 0;
-    }
-
-    function calculateAll() {
-        let mode = document.getElementById('calcMode').value;
-        
-        let regularZakat = 0;
-        let totalUshrValue = 0;
-        
-        let zakatStatus = document.getElementById('zakatStatus');
-        let ushrStatus = document.getElementById('ushrStatus');
-        
-        zakatStatus.style.display = 'none';
-        ushrStatus.style.display = 'none';
-        
-        document.getElementById('wealthDisplayRow').style.display = 'none';
-        document.getElementById('zakatPayableRow').style.display = 'none';
-        document.getElementById('ushrPayableRow').style.display = 'none';
-
-        if (mode === 'zakat') {
-            let marketGoldPrice = getVal('marketGoldPrice');
-            let marketSilverPrice = getVal('marketSilverPrice');
-
-            if (marketGoldPrice <= 0 || marketSilverPrice <= 0) {
-                alert("Please enter today's Gold and Silver market prices.");
-                return;
-            }
-            
-            let goldWeight = getVal('goldWeight');
-            let silverWeight = getVal('silverWeight');
-            let cash = getVal('cash');
-            let business = getVal('business');
-            let debts = getVal('debts');
-
-            let goldNisabValue = marketGoldPrice * 7.5;
-            let silverNisabValue = marketSilverPrice * 52.5;
-            
-            let totalAssets = (goldWeight * marketGoldPrice) + (silverWeight * marketSilverPrice) + cash + business;
-            let netWealth = totalAssets - debts;
-            if (netWealth < 0) netWealth = 0;
-
-            let isZakatApplicable = false;
-
-            // CORRECTED PORTFOLIO LOGIC
-            // Condition A: Standalone Gold Portfolio Asset Valuation (No cash, silver or business goods)
-            if (goldWeight > 0 && silverWeight === 0 && cash === 0 && business === 0) {
-                let netGoldValue = (goldWeight * marketGoldPrice) - debts;
-                if (netGoldValue >= goldNisabValue) {
-                    isZakatApplicable = true;
-                }
-            } 
-            // Condition B: Mixed Assets Evaluation Loop (Defaults safely onto Silver Nisab)
-            else {
-                if (netWealth >= silverNisabValue && netWealth > 0) {
-                    isZakatApplicable = true;
-                }
-            }
-
-            regularZakat = isZakatApplicable ? netWealth * 0.025 : 0;
-
-            zakatStatus.className = "status-msg " + (regularZakat > 0 ? "success-msg" : "danger-msg");
-            zakatStatus.innerText = regularZakat > 0 ? "Personal Zakat: Applicable (Farz) based on Shariah Nisab." : "Personal Zakat: Not applicable (Below Nisab threshold).";
-            zakatStatus.style.display = 'block';
-            
-            document.getElementById('netWealthDisplay').innerText = netWealth.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('regularZakat').innerText = regularZakat.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            
-            document.getElementById('wealthDisplayRow').style.display = 'block';
-            document.getElementById('zakatPayableRow').style.display = 'block';
-            document.getElementById('totalZakat').innerText = regularZakat.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    } else {
+      /* ── Mixed or non-gold portfolio: use Silver Nisab (majority opinion) ── */
+      nisabLabel = 'Silver (52.5 Tola)';
+      if (silverRate === 0 && goldRate > 0) {
+        /* Fallback: use Gold Nisab if only gold rate is provided */
+        nisabLabel = 'Gold (7.5 Tola) — fallback';
+        nisabValue = goldNisab;
+        if (netWealth >= goldNisab) {
+          isApplicable = true;
+          noteText = 'Silver rate not entered; Nisab evaluated against Gold rate as a fallback. Zakat appears due — please confirm with your current silver rate.';
+        } else {
+          noteText = 'Silver rate not entered; Nisab evaluated against Gold rate as a fallback. Your wealth is below this threshold.';
         }
-
-        if (mode === 'ushr') {
-            const USHR_NISAB_KG = 612;
-            let meetsUshrCondition = false;
-
-            let names = document.getElementsByClassName('cropName');
-            let prices = document.getElementsByClassName('cropPrice');
-            let rainWeights = document.getElementsByClassName('cropRainWeight');
-            let irrigWeights = document.getElementsByClassName('cropIrrigWeight');
-
-            let combinedWeight = 0;
-            for (let i = 0; i < names.length; i++) {
-                let price = prices[i].value !== "" ? parseFloat(prices[i].value) : 0;
-                let rain = rainWeights[i].value !== "" ? parseFloat(rainWeights[i].value) : 0;
-                let irrig = irrigWeights[i].value !== "" ? parseFloat(irrigWeights[i].value) : 0;
-                
-                if (price > 0) {
-                    combinedWeight += (rain + irrig);
-                }
-            }
-
-            if (combinedWeight >= USHR_NISAB_KG) {
-                meetsUshrCondition = true;
-            }
-
-            for (let i = 0; i < names.length; i++) {
-                let price = prices[i].value !== "" ? parseFloat(prices[i].value) : 0;
-                let rain = rainWeights[i].value !== "" ? parseFloat(rainWeights[i].value) : 0;
-                let irrig = irrigWeights[i].value !== "" ? parseFloat(irrigWeights[i].value) : 0; 
-                
-                if (meetsUshrCondition && price > 0) {
-                    let cropUshrWeight = (rain * 0.10) + (irrig * 0.05);
-                    totalUshrValue += (cropUshrWeight * price);
-                }
-            }
-
-            ushrStatus.className = "status-msg " + (meetsUshrCondition && totalUshrValue > 0 ? "success-msg" : "danger-msg");
-            ushrStatus.innerText = (meetsUshrCondition && totalUshrValue > 0) ? "Ushr: Applicable on eligible crops." : "Ushr: Not applicable (Combined yields below 612 KG or price missing).";
-            ushrStatus.style.display = 'block';
-            
-            document.getElementById('cropZakat').innerText = totalUshrValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('ushrPayableRow').style.display = 'block';
-            document.getElementById('totalZakat').innerText = totalUshrValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      } else if (silverRate > 0) {
+        nisabValue = silverNisab;
+        if (netWealth >= silverNisab) {
+          isApplicable = true;
+          noteText = 'Your assets meet the Silver Nisab threshold (52.5 Tola). Zakat is due at 2.5% on your net wealth.';
+        } else {
+          noteText = 'Your net wealth is below the Silver Nisab of 52.5 Tola. No Zakat is due on this wealth.';
         }
-
-        document.getElementById('resultBox').style.display = 'block';
+      } else {
+        nisabValue = 0;
+        noteText = 'Please enter at least a gold or silver rate to calculate the Nisab threshold accurately.';
+      }
     }
+
+    const zakatPayable = isApplicable ? (netWealth * 0.025) : 0;
+
+    /* ── Render ── */
+    setText('z-totalAssets', fmt(totalAssets));
+    setText('z-totalDebts',  fmt(debts));
+    setText('z-netWealth',   fmt(netWealth));
+    setText('z-nisabUsed',   nisabLabel);
+    setText('z-nisabVal',    nisabValue > 0 ? fmt(nisabValue) : 'Enter rate above');
+    setText('z-payable',     fmt(zakatPayable));
+    setText('z-note',        noteText);
+
+    setHTML('z-status', isApplicable
+      ? '<span class="badge badge-yes">Applicable ✓</span>'
+      : '<span class="badge badge-no">Not Applicable</span>');
+
+    document.getElementById('z-results').style.display = 'block';
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     USHR CALCULATION
+     - 10% for natural/rain-fed irrigation
+     - 5%  for paid/pump irrigation
+     - Nisab = 5 Wasaq ≈ 653 kg
+  ══════════════════════════════════════════════════════════ */
+  function calcUshr() {
+    const yieldVal = val('u-yieldVal');
+    const weight   = val('u-weight');
+    const irrType  = document.getElementById('u-irrigation').value;
+
+    if (yieldVal <= 0) {
+      alert('Please enter a crop yield value greater than zero.');
+      return;
+    }
+
+    const rate      = irrType === 'rain' ? 0.10 : 0.05;
+    const rateLabel = irrType === 'rain' ? '10% (natural irrigation)' : '5% (paid irrigation)';
+    const irrLabel  = irrType === 'rain' ? 'Natural / rainfall' : 'Pump / paid means';
+    const NISAB_KG  = 653;
+
+    let wtStatusHtml = '';
+    let noteText     = '';
+    let ushrPayable  = 0;
+
+    if (weight > 0) {
+      if (weight >= NISAB_KG) {
+        wtStatusHtml = '<span class="badge badge-yes">' + weight.toLocaleString() + ' kg ≥ 653 kg — Nisab met ✓</span>';
+        ushrPayable  = yieldVal * rate;
+        noteText     = 'Your harvest weight meets the 5 Wasaq Nisab (653 kg). Ushr is due on the full yield value at the ' + rateLabel + ' rate.';
+      } else {
+        wtStatusHtml = '<span class="badge badge-no">' + weight.toLocaleString() + ' kg &lt; 653 kg — Below Nisab</span>';
+        ushrPayable  = 0;
+        noteText     = 'Your harvest weight (' + weight.toLocaleString() + ' kg) is below the Nisab of 5 Wasaq (653 kg). Ushr is not due on this harvest.';
+      }
+    } else {
+      wtStatusHtml = '<span class="badge badge-warn">Weight not entered — calculated on value only</span>';
+      ushrPayable  = yieldVal * rate;
+      noteText     = 'Harvest weight was not entered, so the weight-based Nisab could not be verified. Ushr has been calculated on the yield value. Please verify with a scholar if your harvest may be near or below the 653 kg Nisab threshold.';
+    }
+
+    setText('u-yieldDisp', fmt(yieldVal));
+    setText('u-irrDisp',   irrLabel);
+    setText('u-rateDisp',  rateLabel);
+    setText('u-nisabWt',   '653 kg (5 Wasaq)');
+    setText('u-payable',   fmt(ushrPayable));
+    setText('u-note',      noteText);
+    setHTML('u-wtStatus',  wtStatusHtml);
+
+    document.getElementById('u-results').style.display = 'block';
+  }
 </script>
+
 </body>
 </html>
